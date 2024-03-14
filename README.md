@@ -62,6 +62,12 @@ pip install -r requirements.txt
 In this section we are going to analyse some benchmarks and some overall thoughts while building the application. 
 
 ### Modal
+Before proceeding to the analysis, if you want to reproduce the results, you need to first start the modal server. Instruction available [here](/modal/README.md). After this you need to run the benchmark file. Make sure to stay under this project root folder. 
+
+```bash
+python benchmarks/benchmark.py modal --base_url https://premai-io--completion-dev.modal.run
+```
+Change the `--base_url` with the one generated from your deployement using Modal. Now let's discuss the results. 
 
 1. **Costs:** The approx cost that took for the experiment in an A100-80 GB for 30 prompts (3 during Cold Start and 27 after that) was around 0.7 $. When it comes to latency, the average cold start latency was around 24.8 ms and after that average latency was around 14.45 ms. So roughly it takes ~ 10 seconds to get the server ready before it takes the first request. 
 
