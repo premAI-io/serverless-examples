@@ -30,7 +30,7 @@ To ensure a fair comparison, we'll adhere to this deployment workflow:
 3. Deploy the service.
 
 ### Experiment and benchmarking workflow
-
+x
 1. Once served / deployed, we will be using 30 prompts, where the first 5 prompts are used to evaluate the warmup or cold start latency and timings, and leftover 25 prompts are used to see the benchmarks on normal queues (after cold start)
 
 2. Generation length will be set to 512 tokens
@@ -41,6 +41,21 @@ To ensure a fair comparison, we'll adhere to this deployment workflow:
     - tokens/sec and latency (cold start and average)
 
 Each deployment method has its own folder, with accompanying README files providing instructions and additional information about usage.
+
+Also, before getting started, please make sure you created a virtual env and installed the common dependencies. Here is how you can do it.
+
+```bash
+
+# create a virtual env
+python -m venv venv
+
+# activate it
+source venv/bin/activate
+
+# now install the common dependencies
+pip install -r requirements.txt
+
+```
 
 ## 🧐 Analysis and Results 
 

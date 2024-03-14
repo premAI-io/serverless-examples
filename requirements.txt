@@ -1,1 +1,3 @@
+modal==0.61.45
+runpod==1.6.2
 tiktoken==0.6.0
