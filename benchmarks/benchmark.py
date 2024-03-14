@@ -1,17 +1,18 @@
 import time 
 import json
 import logging 
+import argparse
 import tiktoken
 import requests
 from tqdm import tqdm 
-from typing import Union, List
+from typing import Union, List, Optional
 
 def log_and_print(logger, string):
     logger.info(string)
     print(string)
 
 
-def get_single_response_benchmark(chat_query: Union[str, List[dict]], service: str):
+def get_single_response_benchmark(chat_query: Union[str, List[dict]], service: str, url: Optional[str] = None):
     assert service in ["modal", "beam", "runpod"], ValueError("Benchmark is available for services: 'modal', 'runpod', and 'beam'")
     headers = {
         "Content-Type": "application/json"
@@ -37,6 +38,9 @@ def get_single_response_benchmark(chat_query: Union[str, List[dict]], service: s
         }, "https://premai-io--completion-dev.modal.run")
         # Please change the url here
     }
+
+    if url:
+        data_and_url_mapping[service][1] = url 
 
     start = time.time()
     completion_response = requests.post(
@@ -69,7 +73,7 @@ def get_single_response_benchmark(chat_query: Union[str, List[dict]], service: s
         }
     return None 
 
-def perform_benchmark(service: str):
+def perform_benchmark(service: str, url: Optional[str] = None):
     all_prompts = json.load(open("benchmarks/questions.json", "r"))["questions"]
     coldstart_prompts = all_prompts[:3]
     remaining_prompts = all_prompts[5:]
@@ -79,7 +83,7 @@ def perform_benchmark(service: str):
     log_and_print(logger, "=============== COLDSTART BENCHMARK ===============\n")
 
     for prompt in tqdm(coldstart_prompts, total=3):
-        results = get_single_response_benchmark(chat_query=prompt, service=service)
+        results = get_single_response_benchmark(chat_query=prompt, service=service, url=url)
         if results is not None:  
             logger.info(
                 f"Completion test for service: {service} for Mistral 7B Instruct completed successfully. "
@@ -92,7 +96,7 @@ def perform_benchmark(service: str):
     log_and_print(logger, "=============== AFTER COLDSTART BENCHMARK ===============\n")
 
     for prompt in tqdm(remaining_prompts, total=27):
-        results = get_single_response_benchmark(chat_query=prompt, service=service)
+        results = get_single_response_benchmark(chat_query=prompt, service=service, url=url)
         if results is not None:  
             logger.info( 
                 f"Completion test for service: {service} for Mistral 7B Instruct completed successfully. "
@@ -116,4 +120,9 @@ if __name__ == '__main__':
         level=logging.DEBUG,
     )
 
-    perform_benchmark(service="modal")
+    parser = argparse.ArgumentParser(description="Test generate function")
+    parser.add_argument("service", type=str, help="Which service to benchmark. Options: 'modal', 'beam' and 'runpod'")
+    parser.add_argument("--base_url", type=str, help="Base URL of the deployed model")
+
+    args = parser.parse_args()
+    perform_benchmark(service=args.service, url=args.base_url)
