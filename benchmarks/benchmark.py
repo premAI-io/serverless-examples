@@ -1,3 +1,4 @@
+import os 
 import time 
 import json
 import logging 
@@ -5,6 +6,7 @@ import argparse
 import tiktoken
 import requests
 from tqdm import tqdm 
+from dotenv import load_dotenv
 from typing import Union, List, Optional
 
 def log_and_print(logger, string):
@@ -14,9 +16,17 @@ def log_and_print(logger, string):
 
 def get_single_response_benchmark(chat_query: Union[str, List[dict]], service: str, url: Optional[str] = None):
     assert service in ["modal", "beam", "runpod"], ValueError("Benchmark is available for services: 'modal', 'runpod', and 'beam'")
+    
+    load_dotenv() 
+
     headers = {
         "Content-Type": "application/json"
+    } if service != "beam" else {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': f'Basic {os.environ.get("BEAM_API_KEY")}'
     }
+    
     data_and_url_mapping = {
         "runpod": ({
             "input": {
@@ -35,16 +45,24 @@ def get_single_response_benchmark(chat_query: Union[str, List[dict]], service: s
             "temperature": 0.1,
             "top_p": 0.7,
             "max_new_tokens":512
-        }, "https://premai-io--completion-dev.modal.run")
+        }, "https://premai-io--completion-dev.modal.run"),
         # Please change the url here
+
+        "beam": ({
+            "messages": chat_query,
+            "temperature": 0.1,
+            "top_p": 0.7,
+            "max_new_tokens":512
+        }, "https://ttjjj-65f54dc74b5f2400097b3533.apps.beam.cloud/stream")
+        
     }
 
-    if url:
-        data_and_url_mapping[service][1] = url 
+    
+    url = data_and_url_mapping[service][1] if url is None else url 
 
     start = time.time()
     completion_response = requests.post(
-        url=data_and_url_mapping[service][1], 
+        url=url, 
         headers=headers, data=json.dumps(data_and_url_mapping[service][0]), timeout=600, stream=True
     )
 
