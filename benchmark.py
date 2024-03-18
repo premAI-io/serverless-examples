@@ -18,16 +18,38 @@ def benchmark_response(chat_query: Union[str, List[str]], service: str):
                     "max_new_tokens":512
                 }
             }
-        }, "http://localhost:8000/runsync")
+        }, "http://localhost:8000/run")
     }
     response = requests.post(
         url=data_and_url_mapping[service][1], 
-        headers=headers, data=json.dumps(data_and_url_mapping[service][0]), timeout=600, stream=True
+        headers=headers, json=data_and_url_mapping[service][0], timeout=600,
     )
     
+    job_id = response.json()['id']
+    print(job_id)
+    url = f'http://localhost:8000/stream/{job_id}'
+
+    while True:
+        get_status = requests.get(url, headers=headers)
+        print(get_status.text)
+        import time
+        time.sleep(2)
+
+    return
+    response = requests.post(
+        url=url,
+        headers=headers,
+    )
+    print(response.status_code)
+
     if response.status_code == 200:
-        for res in response.iter_lines():
-            print(res)
+        for i, res in enumerate(response.iter_lines()):
+            print(i, res)
+    return
+    
+    if response.status_code == 200:
+        for i, res in enumerate(response.iter_lines()):
+            print(i, res)
 
 if __name__ == '__main__':
     chat_input = [

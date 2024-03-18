@@ -1,6 +1,7 @@
 import runpod
 from engine import HFEngine
 from constants import DEFAULT_MAX_CONCURRENCY
+import asyncio
 
 class JobInput:
     def __init__(self, job):
@@ -15,19 +16,25 @@ class JobInput:
         )
 
 async def handler(job):
-    engine = HFEngine()
-    job_input = JobInput(job["input"])
+    # engine = HFEngine()
+    # job_input = JobInput(job["input"])
+    # print(job_input)
+    for count in range(3):
+        result = f"This is the {count} generated output."
+        yield result
+        await asyncio.sleep(5)
 
-    async for delta in engine.stream(
-        chat_input=job_input.llm_input,
-        generation_parameters=job_input.sampling_params
-    ):
-        yield delta 
+    # async for delta in engine.stream(
+    #     chat_input=job_input.llm_input,
+    #     generation_parameters=job_input.sampling_params
+    # ):
+    #     yield delta 
 
 
 runpod.serverless.start(
     {
         "handler": handler,
-        "concurrency_modifier": lambda x: DEFAULT_MAX_CONCURRENCY,
+        # "return_aggregate_stream": True,
+        # "concurrency_modifier": lambda x: DEFAULT_MAX_CONCURRENCY,
     }
 )
