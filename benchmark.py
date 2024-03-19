@@ -3,10 +3,13 @@ import requests
 from typing import Union, List
 
 def benchmark_response(chat_query: Union[str, List[str]], service: str):
+    runpod_api_token = 'H2JVX2OP30OM5WW1Y4YCC13T3GVG4Q25SBYZ56OS'
+    service_id = 'gx0098lddlsp1c'
+
     assert service in ["modal", "beam", "runpod"], ValueError("Benchmark is available for services: 'modal', 'runpod', and 'beam'")
     headers = {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer H2JVX2OP30OM5WW1Y4YCC13T3GVG4Q25SBYZ56OS',
+        'Authorization': f'Bearer {runpod_api_token}',
     }
     data_and_url_mapping = {
         "runpod": ({
@@ -19,7 +22,7 @@ def benchmark_response(chat_query: Union[str, List[str]], service: str):
                     "max_new_tokens":512
                 }
             }
-        }, "https://api.runpod.ai/v2/gx0098lddlsp1c/run")
+        }, f"https://api.runpod.ai/v2/{service_id}/run")
     }
     response = requests.post(
         url=data_and_url_mapping[service][1], 
@@ -27,7 +30,7 @@ def benchmark_response(chat_query: Union[str, List[str]], service: str):
     )
     
     job_id = response.json()['id']
-    url = f'https://api.runpod.ai/v2/gx0098lddlsp1c/stream/{job_id}'
+    url = f'https://api.runpod.ai/v2/{service_id}/stream/{job_id}'
 
     while True:
         response = requests.get(url, headers=headers)
