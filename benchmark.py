@@ -5,7 +5,8 @@ from typing import Union, List
 def benchmark_response(chat_query: Union[str, List[str]], service: str):
     assert service in ["modal", "beam", "runpod"], ValueError("Benchmark is available for services: 'modal', 'runpod', and 'beam'")
     headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer H2JVX2OP30OM5WW1Y4YCC13T3GVG4Q25SBYZ56OS',
     }
     data_and_url_mapping = {
         "runpod": ({
@@ -18,7 +19,7 @@ def benchmark_response(chat_query: Union[str, List[str]], service: str):
                     "max_new_tokens":512
                 }
             }
-        }, "http://localhost:8000/run")
+        }, "https://api.runpod.ai/v2/gx0098lddlsp1c/run")
     }
     response = requests.post(
         url=data_and_url_mapping[service][1], 
@@ -26,14 +27,16 @@ def benchmark_response(chat_query: Union[str, List[str]], service: str):
     )
     
     job_id = response.json()['id']
-    print(job_id)
-    url = f'http://localhost:8000/stream/{job_id}'
+    url = f'https://api.runpod.ai/v2/gx0098lddlsp1c/stream/{job_id}'
 
     while True:
-        get_status = requests.get(url, headers=headers)
-        print(get_status.text)
-        import time
-        time.sleep(2)
+        response = requests.get(url, headers=headers)
+        response = response.json()
+
+        if response['status'] == 'COMPLETED':
+            break
+
+        print(response['stream'][0]['output'])
 
     return
     response = requests.post(

@@ -1,13 +1,14 @@
-FROM python:latest
+FROM python:3.11.1-buster
+
+WORKDIR /
 
 ARG MODEL_NAME="stabilityai/stablelm-zephyr-3b"
 ARG TOKENIZER_NAME="stabilityai/stablelm-zephyr-3b"
 ARG DEVICE="cuda"
 
-COPY builder/requirements.txt /requirements.txt
-COPY builder/setup.sh /setup.sh
+COPY builder/requirements.txt .
 
-RUN python3 -m pip install --upgrade -r /requirements.txt --no-cache-dir
+RUN pip install -r requirements.txt
 
 COPY src /src
-CMD ["python", "/src/handler.py"]
+CMD ["python", "-u", "/src/handler.py"]
