@@ -12,4 +12,8 @@ PACKAGES = [
 ]
 PYTHON_VERSION = "python3.9"
 CACHE_PATH = "./cached_models"
-MODEL_ID = "stabilityai/stablelm-zephyr-3b"
+MODEL_ID = "google/gemma-2b-it"
+
+# Model options for Beam:
+# - stabilityai/stablelm-zephyr-3b
+# - google/gemma-2b-it
