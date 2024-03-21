@@ -1,0 +1,5 @@
+runpod==1.6.2
+transformers==4.38.2
+python-dotenv==1.0.1
+huggingface-hub==0.21.4
+fastapi==0.110.0
