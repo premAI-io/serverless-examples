@@ -1,7 +1,10 @@
 # Define the model name and model dir
 MODEL_DIR = "/model"
-BASE_MODEL = "mistralai/Mistral-7B-Instruct-v0.1"
+BASE_MODEL = "mistralai/Mistral-7B-v0.1"
 
+# Model options for this example:
+# - mistralai/Mistral-7B-v0.1
+# - stabilityai/stablelm-zephyr-3b
 
 # Name the stub (it should all be in lower case)
 STUB_NAME = f"{BASE_MODEL.lower()}-deployement"
