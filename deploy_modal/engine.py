@@ -111,7 +111,8 @@ class HFEngine:
         gen_kwargs = dict(
             input_ids=input_ids,
             streamer=self.streamer,
-            pad_token_id=self.tokenizer.eos_token_id**generation_kwargs,
+            pad_token_id=self.tokenizer.eos_token_id,
+            **generation_kwargs,
         )
 
         thread = Thread(target=self.model.generate, kwargs=gen_kwargs)
