@@ -1,3 +1,4 @@
+import os 
 import json
 import asyncio
 from queue import Empty
@@ -44,9 +45,9 @@ def load_models():
     # very first time. After that, it loads the model from cache dir
 
     model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID, cache_dir=CACHE_PATH, device_map="auto"
+        MODEL_ID, cache_dir=CACHE_PATH, device_map="auto", token=os.environ.get("HUGGINGFACE_API_KEY")
     )
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, cache_dir=CACHE_PATH)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, cache_dir=CACHE_PATH, token=os.environ.get("HUGGINGFACE_API_KEY"))
 
     streamer = TextIteratorStreamer(tokenizer=tokenizer)
     return model, tokenizer, streamer
