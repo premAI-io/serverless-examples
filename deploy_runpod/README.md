@@ -1,8 +1,12 @@
 # RunPod
 
-[RunPod](https://www.runpod.io/) is a distributed GPU cloud infrastructure built for production. It helps us to develop, train, and scale AI applications easily and also helps to manage deployements. You can also rent different GPUs using runpod for very lesser rates to carry out your experiments or use their serverless deployements services to deploy AI based applications. 
+#### Check out our [Tutorial Blogpost](https://blog.premai.io/serverless-deploy-mistral-2-7b-runpod/)
+
+[RunPod](https://www.runpod.io/) presents itself as a distributed GPU cloud infrastructure designed for production use. It facilitates the development, training, and scaling of AI applications while offering deployment management services. Users can rent various GPUs from RunPod at competitive rates for experimentation purposes or utilize their serverless deployment services for deploying AI-based applications.
 
 ## Pricing of RunPod
+
+Here is the pricing structure of RunPod:
 
 | Capacity | Model | Price (Flex)      | Price (Active)     |
 |----------|-------|-------------------|--------------------|
@@ -14,21 +18,21 @@
 | 80 GB    | A100  | $0.00130          | $0.00078           |
 | 80 GB    | H100  | $0.00250          | $0.00150           |
 
-They also have an [awesome calculator](https://www.runpod.io/serverless-gpu) which helps us to do a monthly costs based on different requirements. 
+RunPod offers an [online calculator](https://www.runpod.io/serverless-gpu) for estimating monthly costs based on different requirements.
 
-## How to get started
+## How to Get Started locally
 
-Getting started with runpod is super easy. Before deploying on the platform, if you want to try this out locally you need to first install the given requirements. 
+Getting started with RunPod is straightforward. Before deploying on the platform, if you wish to try it locally, you need to install the required dependencies:
 
 ```bash
 pip install -r builder/requirements.txt
 ```
 
-Since you will be doing testing, so change your `.env` (or make one from `.env.template`) such that model is super light and using cpu (if you do not have GPUs). Something like this.
+For testing purposes, modify your `.env` file (or create one from `.env.template`) to specify a lightweight model and use CPU if no GPUs are available. For example:
 
 ```bash
-HF_MODEL_NAME="gpt2"
-HF_TOKENIZER_NAME="gpt2"
+MODEL_NAME="gpt2"
+TOKENIZER_NAME="gpt2"
 DEVICE="cpu"
 ```
 
@@ -38,4 +42,4 @@ Now you can run this setup locally using the following command:
 python src/handler.py --rp_serve_api
 ```
 
-This will serve a fastapi like server and then you can post requests and check if it is working or not. 
+This command will launch a server similar to FastAPI, allowing you to send requests and check if it is functioning correctly.

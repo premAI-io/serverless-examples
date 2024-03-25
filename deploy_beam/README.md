@@ -1,9 +1,10 @@
-# Beam Cloud
+# Beam Cloud 
+#### Check out our [Tutorial Blogpost](https://blog.premai.io/deploy-google-gemma-serverless-using-beam-cloud/)
 
-[Beam Cloud](https://beam.cloud) provides serverless infrastructure for deploying Machine Learning models. Most of the focus is mainly put on deploying LLMs for inference and fine-tuning and diffusion models. 
+[Beam Cloud](https://beam.cloud) offers serverless infrastructure for deploying Machine Learning models, with a primary focus on deploying Large Language Models (LLMs) for inference and fine-tuning, as well as diffusion models.
 
 ## Pricing
-Here is the per/second pricing of Beam (last update: 16th March 2024). You can double check prices [here](https://www.beam.cloud/pricing). 
+Below is the pricing structure of Beam, updated as of March 16th, 2024. You can verify the prices [here](https://www.beam.cloud/pricing).
 
 | GPU Model    | Price per Hour (per second) | Price per Hour (per minute) |
 |--------------|-----------------------------|-----------------------------|
@@ -12,31 +13,29 @@ Here is the per/second pricing of Beam (last update: 16th March 2024). You can d
 | A10G GPU     | $0.000467                   | $1.68                       |
 | A100-80 GPU  | $0.001774                   | $6.38                       |
 
-`Please note`: A100 GPUs are not readily available. You have to mail Beam in order to get access. 
+*Note:* A100 GPUs are not readily available; you need to contact Beam to gain access.
 
-The way beam works is kind of similar to Beam. It provides an interface abstracting out the docker file and deployement process. Once you define all those, then in this example, we show you how you can develope a custom Beam deployement using FastAPI under the hood. Since beam readily supports Fast API, so it opens door to several application level customization. However the problem we saw is, it is still super early stage and it does not provide very good documentation to carry out those customization. 
+Beam simplifies the deployment process by abstracting the Dockerfile and deployment procedures. In this example, we demonstrate how to develop a custom deployment using FastAPI under the hood. While Beam supports FastAPI, enabling various application-level customizations, the documentation for these customizations is currently lacking due to the platform being in an early stage of development.
 
-## How to get started
-
-Getting started with Beam is super easy.
+## How to Get Started
+Getting started with Beam is straightforward:
 
 ```bash
-# Install the main beam SDK
-
+# Install the main Beam SDK
 curl https://raw.githubusercontent.com/slai-labs/get-beam/main/get-beam.sh -sSfL | sh
 
-# After this install the python sdk
-
+# After this, install the Python SDK
 python3 -m pip install --upgrade beam-sdk
 ```
 
-Once done, make sure you have an account on Beam. Once done, you can use this repo or customize it according to your needs. In order to run, all you have to do is:
+Once installed, ensure you have an account on Beam. You can then use the provided repository or customize it according to your needs. To run, simply execute:
 
 ```bash
 beam serve server.py
 
 # or
+
 beam deploy server.py
 ```
 
-This will serve/deploy your HuggingFace Model. The key difference is, when you use `beam serve` than can see the build process all from your terminal and you sent your files temporarily to Beam. This makes the deployment temporary. It helps when you have written your code initially and want to test. Here is how you can serve the model. In `deploy` you send all your files to Beam and it is deployed. After this you can manage (like watching logs / deleting app) all through Beams's python CLI or inside their app. Once done it will open a browser window, showing you the deployement with all the metrics and essential post deployement KPIs.
+This command will serve/deploy your HuggingFace Model. The key difference between `beam serve` and `beam deploy` lies in the deployment process. With `beam serve`, you can monitor the build process directly from your terminal, and your files are temporarily sent to Beam, making the deployment temporary. This feature is useful for initial code testing. In contrast, `beam deploy` sends all your files to Beam for deployment. Once deployed, you can manage various aspects, such as watching logs and deleting apps, either through Beam's Python CLI or within their app. After deployment, a browser window will open, displaying the deployment along with essential post-deployment Key Performance Indicators (KPIs).

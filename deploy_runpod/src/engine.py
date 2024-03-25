@@ -10,6 +10,7 @@ from transformers import (
     AutoTokenizer,
     TextIteratorStreamer,
 )
+from constants import DEFAULT_DEVICE, DEFAULT_MODEL_DIR
 
 # A Basic Inference engine using HuggingFace Transformers
 # In this example we are only providing method to stream responses and accept chat based input
@@ -19,15 +20,16 @@ class HFEngine:
     def __init__(self) -> None:
         load_dotenv()
         self.model, self.tokenizer, self.streamer = self._initialize_llm(
-            model_name_or_path=os.environ.get("MODEL_DIR", "/model"),
-            tokenizer_name_or_path=os.environ.get("MODEL_DIR", "/model"),
-            device=os.environ.get("DEVICE") or "cpu",
+            model_name_or_path=os.environ.get("MODEL_DIR", DEFAULT_MODEL_DIR),
+            tokenizer_name_or_path=os.environ.get("MODEL_DIR", DEFAULT_MODEL_DIR),
+            device=os.environ.get("DEVICE") or DEFAULT_DEVICE,
         )
-        self.device = os.environ.get("DEVICE") or "cpu"
+        self.device = os.environ.get("DEVICE") or DEFAULT_DEVICE
 
     def _initialize_llm(
         self, model_name_or_path: str, tokenizer_name_or_path: str, device: str
     ):
+        # Initialize your model and tokenizer here 
         try:
             self.model = AutoModelForCausalLM.from_pretrained(
                 model_name_or_path,
@@ -63,6 +65,7 @@ class HFEngine:
         chat_input: Union[str, List[Dict[str, str]]],
         generation_parameters: Dict[str, Any],
     ):
+        # An async function to
         if isinstance(chat_input, str):
             chat_input = [{"role": "user", "content": chat_input}]
 

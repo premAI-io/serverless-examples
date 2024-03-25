@@ -4,7 +4,6 @@ from huggingface_hub import snapshot_download
 
 def download_model_to_folder(model_id: str, model_dir: str):
     os.makedirs(model_dir, exist_ok=True)
-
     snapshot_download(
         model_id,
         local_dir=model_dir,

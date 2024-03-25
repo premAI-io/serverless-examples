@@ -98,9 +98,6 @@ def web_server(**inputs):
             top_p=float(data.get("top_p", 0.95)),
         )
 
-        print(prompt)
-        print(generation_kwargs)
-
         async def stream_gen():
             async for chunk in _stream(
                 chat_input=prompt, generation_kwargs=generation_kwargs
