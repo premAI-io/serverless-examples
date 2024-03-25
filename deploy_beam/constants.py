@@ -1,4 +1,4 @@
-NAME="beam-stable-lm-3b-deployement-a10g"
+NAME = "beam-stable-lm-3b-deployement-a10g"
 CPU = 4
 GPU = "A10G"
 PACKAGES = [
@@ -10,6 +10,10 @@ PACKAGES = [
     "accelerate",
     "fastapi",
 ]
-PYTHON_VERSION="python3.9"
+PYTHON_VERSION = "python3.9"
 CACHE_PATH = "./cached_models"
-MODEL_ID = "stabilityai/stablelm-zephyr-3b"
+MODEL_ID = "google/gemma-2b-it"
+
+# Model options for Beam:
+# - stabilityai/stablelm-zephyr-3b
+# - google/gemma-2b-it

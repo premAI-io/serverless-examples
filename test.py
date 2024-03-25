@@ -1,21 +1,13 @@
 import os
 import time
 import json
-import logging
 import argparse
 import tiktoken
 import requests
-from tqdm import tqdm
 from dotenv import load_dotenv
 from typing import Union, List, Optional
 
-
-def log_and_print(logger, string):
-    logger.info(string)
-    print(string)
-
-
-def get_single_response_benchmark(
+def get_response_from_service(
     url: str,
     chat_query: Union[str, List[dict]],
     service: str,
@@ -26,6 +18,9 @@ def get_single_response_benchmark(
     )
 
     load_dotenv()
+
+    if service == "beam" and url.split("/")[-1] != "stream":
+        url = f"{url}/stream"
 
     if service == "modal":
         headers = {"Content-Type": "application/json"}
@@ -79,7 +74,9 @@ def get_single_response_benchmark(
                 response = response.json()
                 if response["status"] == "COMPLETED":
                     break
-                response += response["stream"][0]["output"]
+                extracted_text = response["stream"][0]["output"]
+                response += extracted_text
+                print(extracted_text)
         else:
             for text in completion_response.iter_lines():
                 decoded_string = text.decode("utf-8")
@@ -87,13 +84,14 @@ def get_single_response_benchmark(
                     json_string = decoded_string.split(":", 1)[1].strip()
                     data_dict = json.loads(json_string)
                     extracted_text = data_dict["text"]
+                    print(extracted_text)
                     response = response + extracted_text
         end_time = time.time() - start
         encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
         tokens = encoding.encode(response, disallowed_special=())
         tokens_per_second = len(tokens) / end_time
 
-        return {
+        results = {
             "service": service,
             "runpod_service_id": run_pod_service_id,
             "num_tokens": len(tokens),
@@ -101,60 +99,17 @@ def get_single_response_benchmark(
             "latency": end_time,
             "response": response,
         }
-
-    return None
-
-
-def perform_benchmark(service: str, url: str, run_pod_service_id: Optional[str] = None):
-    all_prompts = json.load(open("benchmarks/questions.json", "r"))["questions"]
-    coldstart_prompts = all_prompts[:3]
-    remaining_prompts = all_prompts[5:]
-    coldstart_avg, avg = 0.0, 0.0
-
-    logger = logging.getLogger(__name__)
-    log_and_print(
-        logger, "=============== COLDSTART BENCHMARK ===============\n"
+    
+    print(
+        "="*10,
+        "Additional numbers",
     )
 
-    for prompt in tqdm(coldstart_prompts, total=3):
-        results = get_single_response_benchmark(
-            chat_query=prompt, service=service, url=url, run_pod_service_id=run_pod_service_id
-        )
-        if results is not None:
-            logger.info(
-                (
-                    f"Completion test for service: {service} for completed successfully. "
-                    f"Number of tokens: {results['num_tokens']}. "
-                    f"Tokens per second: {results['tokens_per_second']}. "
-                    f"Time: {results['latency']} seconds."
-                )
-            )
-            coldstart_avg += results["latency"]
+    for k, v in results.items():
+        print(f"{k} : {v}")
+        print()
 
-    log_and_print(
-        logger, "=============== AFTER COLDSTART BENCHMARK ===============\n"
-    )
-
-    for prompt in tqdm(remaining_prompts, total=27):
-        results = get_single_response_benchmark(
-            chat_query=prompt, service=service, url=url
-        )
-        if results is not None:
-            logger.info(
-                (
-                    f"Completion test for service: {service} for completed successfully. "
-                    f"Number of tokens: {results['num_tokens']}. "
-                    f"Tokens per second: {results['tokens_per_second']}. "
-                    f"Time: {results['latency']} seconds."
-                )
-            )
-            avg += results["latency"]
-
-    log_and_print(
-        logger,
-        f"Average latency for coldstart: {(coldstart_avg / 3)} seconds and after this average remains: {(avg / 27)} seconds",
-    )
-
+    print("="*10)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test generate function")
@@ -168,7 +123,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--name", type=str, help="The name of the experiment you want to track", default="def-experiment"
+        "--prompt", type=str, help="Prompt to get response", default="This is a test prompt"
     )
 
     parser.add_argument(
@@ -176,13 +131,9 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-
-    logging.basicConfig(
-        filename=f"Logs/{args.name}.log",
-        filemode="a",
-        format="%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s",
-        datefmt="%H:%M:%S",
-        level=logging.DEBUG,
+    get_response_from_service(
+        service=args.service,
+        url=args.url,
+        chat_query=args.prompt,
+        run_pod_service_id=args.runpod_id
     )
-
-    perform_benchmark(service=args.service, url=args.url, run_pod_service_id=args.runpod_id)
