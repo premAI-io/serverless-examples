@@ -4,7 +4,7 @@
 [Modal Labs](https://modal.com/) offers dedicated GPU and infrastructure primarily focused on facilitating serverless deployments of models. Its key features include providing serverless deployments for Large Language Models (LLMs) and image models, as well as fine-tuning LLMs.
 
 ## Pricing
-Below is the pricing structure of Modal on a per-second basis:
+Below is the pricing structure of Modal Labs, updated as of March 16th, 2024. You can verify the prices [here](https://www.modal.com/pricing).
 
 | Model              | Price (per sec)   | Price (per hour)   |
 |--------------------|--------------------|-------------------|
