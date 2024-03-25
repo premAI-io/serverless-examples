@@ -152,7 +152,7 @@ def perform_benchmark(service: str, url: str, run_pod_service_id: Optional[str] 
 
     log_and_print(
         logger,
-        f"Average latency for coldstart: {(coldstart_avg / 3)} seconds and after this average remains: {(avg / 27)} seconds",
+        f"Average latency for coldstart: {(coldstart_avg / len(coldstart_prompts))} seconds and after this average remains: {(avg / len(remaining_prompts))} seconds",
     )
 
 
