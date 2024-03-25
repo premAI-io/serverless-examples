@@ -6,7 +6,7 @@
 
 ## Pricing of RunPod
 
-Here is the pricing structure of RunPod:
+Below is the pricing structure of RunPod, updated as of March 16th, 2024. You can verify the prices [here](https://www.runpod.io/serverless-gpu).
 
 | Capacity | Model | Price (Flex)      | Price (Active)     |
 |----------|-------|-------------------|--------------------|
